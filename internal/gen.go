@@ -125,8 +125,20 @@ func mergeStruct(dst, src reflect.Value) {
 		sf := src.Field(i)
 		if df.Kind() == reflect.Map {
 			mergeMap(df, sf)
+		} else if df.Kind() == reflect.Array {
+			mergeArray(df, sf)
 		} else if df.IsZero() && !sf.IsZero() {
 			df.Set(sf)
+		}
+	}
+}
+
+func mergeArray(dst, src reflect.Value) {
+	for i := range dst.Len() {
+		de := dst.Index(i)
+		se := src.Index(i)
+		if de.IsZero() && !se.IsZero() {
+			de.Set(se)
 		}
 	}
 }
